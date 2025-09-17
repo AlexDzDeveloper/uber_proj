@@ -1,9 +1,11 @@
-=btn_hover
+@use "variables"
+
+@mixin btn_hover
   &:hover
     background-image: none
-    background-color: $main-color
+    background-color: variables.$main-color
 
-=round
+@mixin round
   display: flex
   justify-content: center
   align-items: center
