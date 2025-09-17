@@ -59,7 +59,7 @@ nav
     display: block
     margin-top: 8px
     color: #FFFFFF
-    font-size: 22px
+    font-size: 18px
     font-weight: 400
     text-transform: uppercase
     text-align: right
@@ -382,6 +382,10 @@ nav
         font-weight: 300
         text-transform: uppercase
         text-decoration: none
+        &:hover
+          color: variables.$main-color
+          transform: scale(1.2)
+          transition: transform 0.4s ease;
     &_sub
       display: flex
       justify-content: space-between
@@ -392,6 +396,11 @@ nav
         font-weight: 300
         text-transform: uppercase
         text-decoration: none
+        &:hover
+          color: variables.$main-color
+          transform: scale(1.2)
+          transition: transform 0.4s ease;
+
     &_lang
       display: block
       margin: 0 auto
