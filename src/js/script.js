@@ -73,10 +73,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const hamburger = document.querySelector('.hamburger');
   const doApplication = document.querySelector(".promo_btn");
   const overlay = document.querySelector(".overlay");
-  const close = document.querySelector(".modal__close");
+  const close = document.querySelectorAll(".modal__close");
   const consultation = document.querySelector("#consultation");
   const request = document.querySelector("#request");
   const inputs = consultation.querySelectorAll('input');
+  const submit = consultation.querySelector('.button_submit');
+  const thx = document.querySelector('#thanks');
+  const feed = consultation.querySelector('.feed-form');
 
   // Меню
   hamburger.addEventListener('click', () => {
@@ -100,26 +103,64 @@ window.addEventListener('DOMContentLoaded', () => {
     consultation.style.display = "block";
   }
 
-  // Закриття модального вікна
-  function closeModal() {
-    overlay.style.visibility = "hidden";
-    overlay.style.opacity = "0";
-    consultation.style.display = "none";
-  }
-
   doApplication.addEventListener('click', openModal);
   request.addEventListener('click', openModal);
-  close.addEventListener('click', closeModal);
+//   close.addEventListener('click', closeModal);
+
+
+// Закриття модального вікна
+	close.forEach(btn => {
+		btn.addEventListener('click', () => {
+			closeModal();
+		})
+	});
+
+	function closeModal() {
+	overlay.style.visibility = "hidden";
+	overlay.style.opacity = "0";
+	consultation.style.display = "none";
+	thx.style.display = 'none';
+	}
 
   // Закриття по кліку на overlay, якщо поля пусті
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
-      if (isEmpty) {
-        closeModal();
-      }
-    }
-  });
+  function overlayClick() {
+	overlay.addEventListener('click', (e) => {
+		if (e.target === overlay) {
+		const isConsultationVisible = consultation.style.display === 'block';
+		const isThanksVisible = thx.style.display === 'block';
 
+		if (isConsultationVisible) {
+			const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
+			if (isEmpty) {
+				closeModal();
+			}
+		}
+
+		if (isThanksVisible) {
+			overlay.style.visibility = "hidden";
+			overlay.style.opacity = "0";
+			thx.style.display = "none";
+		}
+		}
+	});
+  };
+
+  overlayClick();
+
+  submit.addEventListener('click', (e) => {
+
+	if (!feed.checkValidity()) {
+		// якщо форма невалідна → зупиняємо і показуємо нативні повідомлення
+		e.preventDefault();
+		feed.reportValidity();
+		return;
+	}
+
+	e.preventDefault(); //зупиняє стандартне надсилання форми
+	consultation.style.display = 'none';
+	thx.style.display = 'block';
+	overlayClick();
+	inputs.forEach(input => input.value = '');
+  });
 
 });
