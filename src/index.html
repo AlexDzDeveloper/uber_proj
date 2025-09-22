@@ -366,12 +366,22 @@
       <div class="modal__descr">і ми зателефонуємо Вам на протязі 10хв</div>
       <form action="#" class="feed-form feed-form_mt25">
         <input name="name" type="text" placeholder="Ваше ім'я" required>
-        <input name="phone" placeholder="Ваш телефон" required>
+        <input name="phone" type="number" pattern="\+380\d{9}" placeholder="Ваш телефон" required>
         <input name="email" type="email" placeholder="Ваш E-mail" required>
 
         <button class="button button_submit">Замовити консультацію</button>
       </form>
     </div>
+
+	<div class="modal" id="call">
+		<div class="modal__close">&times;</div><!-- працюю з хрестиком, як із шрифтом -->
+		<div class="modal__subtitle">Залиште свій номер телефону</div>
+		<div class="modal__descr">і ми зателефонуємо Вам на протязі 10хв</div>
+		<form action="#" class="feed-form feed-form_mt25">
+			<input name="phone" type="tel" pattern="\+380\d{9}" placeholder="Ваш телефон" required>
+			<button class="button button_submit">Замовити дзвінок</button>
+		</form>
+	</div>
 
     <div class="modal modal_mini" id="thanks">
       <div class="modal__close">&times;</div><!-- працюю з хрестиком, як із шрифтом -->
