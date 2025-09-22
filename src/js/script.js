@@ -1,72 +1,3 @@
-// window.addEventListener('DOMContentLoaded', () => {
-//   const menu = document.querySelector('.menu'),
-//   menuItem = document.querySelectorAll('.menu_item'),
-//   hamburger = document.querySelector('.hamburger');
-
-//   hamburger.addEventListener('click', () => {
-//       hamburger.classList.toggle('hamburger_active');
-//       menu.classList.toggle('menu_active');
-//   });
-
-//   menuItem.forEach(item => {
-//       item.addEventListener('click', () => {
-//           hamburger.classList.toggle('hamburger_active');
-//           menu.classList.toggle('menu_active');
-//       })
-//   });
-
-//   //Робота із модальним вікном
-//   const doApplication = document.querySelector(".promo_btn"),
-//   		overlay = document.querySelector(".overlay"),
-// 		close = document.querySelector(".modal__close"),
-// 		consultation = document.querySelector("#consultation"),
-// 		thx = document.querySelector("#thanks"),
-// 		request = document.querySelector("#request");
-
-//   request.addEventListener('click', () => {
-// 	overlay.style.visibility = "visible";
-// 	consultation.style.display = "block";
-//   })
-
-//   doApplication.addEventListener('click', () => {
-// 	// console.log('click');
-// 	overlay.style.visibility = "visible";
-// 	consultation.style.display = "block";
-// 	overlay.style.position = 'fixed';
-// 	overlay.style.opacity = '1';
-// 	overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
-//   });
-
-//   close.addEventListener('click', () => {
-// 	// console.log('Close window');
-// 	overlay.style.visibility = "hidden";
-// 	overlay.style.opacity = "0";
-// 	overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
-//   });
-
-//   const inputs = consultation.querySelectorAll('input');
-//   const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
-
-//   function closwModal(e) {
-// 	  overlay.style.visibility = "hidden";
-// 	  overlay.style.opacity = "0";
-// 	  consultation.style.display = "none";
-// 	  if (e.target === overlay && isEmpty) {
-// 		closeModal();
-// 	  };
-//   }
-
-
-
-//   // Перевіряємо, чи клік був саме по overlay, а не по модальному вікну
-//   overlay.addEventListener('click', (e) => {
-//   if (e.target === overlay) {
-// 	  closwModal();
-//     }
-//   });
-// })
-
-
 window.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('.menu');
   const menuItems = document.querySelectorAll('.menu_item');
@@ -77,9 +8,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const consultation = document.querySelector("#consultation");
   const request = document.querySelector("#request");
   const inputs = consultation.querySelectorAll('input');
-  const submit = consultation.querySelector('.button_submit');
+  const submit = overlay.querySelectorAll('.button_submit');
   const thx = document.querySelector('#thanks');
-  const feed = consultation.querySelector('.feed-form');
+  const feed = overlay.querySelectorAll('.feed-form');
+  const call = document.querySelector('#call');
+  const subheaderBtn = document.querySelector('.subheader_btn');
+  const callInput = call.querySelector('input');
+
+  let activeModalType = null;
 
   // Меню
   hamburger.addEventListener('click', () => {
@@ -95,16 +31,25 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Відкриття модального вікна
-  function openModal() {
+  function openModal(type) {
+
+	activeModalType = type;
+
     overlay.style.visibility = "visible";
     overlay.style.opacity = "1";
     overlay.style.position = "fixed";
     overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
-    consultation.style.display = "block";
-  }
 
-  doApplication.addEventListener('click', openModal);
-  request.addEventListener('click', openModal);
+	if (type === 'consultation') {
+		consultation.style.display = "block";
+	} else if (type === 'call') {
+		call.style.display = "block";
+	}
+  };
+
+doApplication.addEventListener('click', () => openModal('consultation'));
+request.addEventListener('click', () => openModal('consultation'));
+subheaderBtn.addEventListener('click', () => openModal('call'));
 //   close.addEventListener('click', closeModal);
 
 
@@ -120,47 +65,81 @@ window.addEventListener('DOMContentLoaded', () => {
 	overlay.style.opacity = "0";
 	consultation.style.display = "none";
 	thx.style.display = 'none';
+	call.style.display = 'none';
 	}
 
   // Закриття по кліку на overlay, якщо поля пусті
   function overlayClick() {
 	overlay.addEventListener('click', (e) => {
 		if (e.target === overlay) {
-		const isConsultationVisible = consultation.style.display === 'block';
-		const isThanksVisible = thx.style.display === 'block';
+			const isConsultationVisible = consultation.style.display === 'block';
+			const isThanksVisible = thx.style.display === 'block';
+			const isCallVisible = call.style.display === 'block';
 
-		if (isConsultationVisible) {
-			const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
-			if (isEmpty) {
-				closeModal();
+			if (isConsultationVisible) {
+				const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
+				if (isEmpty) {
+					closeModal();
+				}
 			}
-		}
 
-		if (isThanksVisible) {
-			overlay.style.visibility = "hidden";
-			overlay.style.opacity = "0";
-			thx.style.display = "none";
-		}
+			if (isThanksVisible) {
+				overlay.style.visibility = "hidden";
+				overlay.style.opacity = "0";
+				thx.style.display = "none";
+			}
+
+			if (isCallVisible) {
+				const isEmpty = callInput.value === '';
+				if(isEmpty) {
+					closeModal();
+				}
+			}
 		}
 	});
   };
 
   overlayClick();
 
-  submit.addEventListener('click', (e) => {
+  submit.forEach(item => {
+	item.addEventListener('click', (e) => {
 
-	if (!feed.checkValidity()) {
-		// якщо форма невалідна → зупиняємо і показуємо нативні повідомлення
-		e.preventDefault();
-		feed.reportValidity();
-		return;
-	}
+		// const visibleForm = Array.from(document.querySelectorAll('form')).find(form => {
+		// 	return window.getComputedStyle(form).display !== 'none';
+		// });
 
-	e.preventDefault(); //зупиняє стандартне надсилання форми
-	consultation.style.display = 'none';
-	thx.style.display = 'block';
-	overlayClick();
-	inputs.forEach(input => input.value = '');
-  });
+		// if (visibleForm && !visibleForm.checkValidity()) {
+		// 	e.preventDefault();
+		// 	visibleForm.reportValidity();
+		// 	return;
+		// }
+
+		const form = activeModalType === 'consultation' ? consultation.querySelector('form') : call.querySelector('form');
+
+		if (form && !form.checkValidity()) {
+			e.preventDefault();
+			form.reportValidity();
+			return;
+		}
+
+
+		e.preventDefault(); //зупиняє стандартне надсилання форми
+
+		const isConsultationVisible = consultation.style.display === 'block';
+		const isCallVisible = call.style.display === 'block';
+
+		if (isConsultationVisible) {
+			consultation.style.display = 'none';
+			thx.style.display = 'block';
+			overlayClick();
+			inputs.forEach(input => input.value = '');
+		} else if (isCallVisible) {
+			call.style.display = 'none';
+			thx.style.display = 'block';
+			overlayClick();
+			callInput.value = '';
+		}
+	});
+  })
 
 });
