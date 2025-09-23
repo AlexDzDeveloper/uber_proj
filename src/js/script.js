@@ -32,20 +32,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Відкриття модального вікна
   function openModal(type) {
+  activeModalType = type;
 
-	activeModalType = type;
+  overlay.style.visibility = "visible";
+  overlay.style.opacity = "1";
+  overlay.style.position = "fixed";
+  overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
 
-    overlay.style.visibility = "visible";
-    overlay.style.opacity = "1";
-    overlay.style.position = "fixed";
-    overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
+  let phoneInput;
 
-	if (type === 'consultation') {
-		consultation.style.display = "block";
-	} else if (type === 'call') {
-		call.style.display = "block";
-	}
-  };
+  if (type === 'consultation') {
+    consultation.style.display = "block";
+    phoneInput = consultation.querySelector('input[name="phone"]');
+  } else if (type === 'call') {
+    call.style.display = "block";
+    phoneInput = call.querySelector('input[name="phone"]');
+  }
+
+  Inputmask("+38 (099) 999-99-99").mask(phoneInput);
+}
 
 doApplication.addEventListener('click', () => openModal('consultation'));
 request.addEventListener('click', () => openModal('consultation'));
@@ -104,16 +109,6 @@ subheaderBtn.addEventListener('click', () => openModal('call'));
   submit.forEach(item => {
 	item.addEventListener('click', (e) => {
 
-		// const visibleForm = Array.from(document.querySelectorAll('form')).find(form => {
-		// 	return window.getComputedStyle(form).display !== 'none';
-		// });
-
-		// if (visibleForm && !visibleForm.checkValidity()) {
-		// 	e.preventDefault();
-		// 	visibleForm.reportValidity();
-		// 	return;
-		// }
-
 		const form = activeModalType === 'consultation' ? consultation.querySelector('form') : call.querySelector('form');
 
 		if (form && !form.checkValidity()) {
@@ -121,7 +116,6 @@ subheaderBtn.addEventListener('click', () => openModal('call'));
 			form.reportValidity();
 			return;
 		}
-
 
 		e.preventDefault(); //зупиняє стандартне надсилання форми
 
@@ -140,6 +134,5 @@ subheaderBtn.addEventListener('click', () => openModal('call'));
 			callInput.value = '';
 		}
 	});
-  })
-
+  });
 });

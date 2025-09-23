@@ -1059,6 +1059,9 @@ nav {
   text-align: center;
   color: #0D0D0D;
 }
+.modal_recall {
+  min-height: 250px;
+}
 .modal_mini {
   min-height: 140px;
 }
@@ -1101,6 +1104,10 @@ nav {
 }
 .feed-form_mt25 {
   margin-top: 25px;
+}
+
+#call .feed-form input {
+  margin-bottom: 17px;
 }
 
 .button {
