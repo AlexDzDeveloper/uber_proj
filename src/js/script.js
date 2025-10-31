@@ -39,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
   overlay.style.position = "fixed";
   overlay.style.transition = "opacity 0.65s ease, visibility 0.65s ease";
 
+  //Перевірка на активне модальне вікно та відповідно до нього маска номера телефону
   let phoneInput;
 
   if (type === 'consultation') {
@@ -55,84 +56,87 @@ window.addEventListener('DOMContentLoaded', () => {
 doApplication.addEventListener('click', () => openModal('consultation'));
 request.addEventListener('click', () => openModal('consultation'));
 subheaderBtn.addEventListener('click', () => openModal('call'));
-//   close.addEventListener('click', closeModal);
 
 
 // Закриття модального вікна
-	close.forEach(btn => {
-		btn.addEventListener('click', () => {
-			closeModal();
-		})
-	});
+close.forEach(btn => {
+   btn.addEventListener('click', () => {
+      closeModal();
+   })
+});
 
-	function closeModal() {
-	overlay.style.visibility = "hidden";
-	overlay.style.opacity = "0";
-	consultation.style.display = "none";
-	thx.style.display = 'none';
-	call.style.display = 'none';
-	}
+//Задаю стилі при закритті модального вікна
+function closeModal() {
+   overlay.style.visibility = "hidden";
+   overlay.style.opacity = "0";
+   consultation.style.display = "none";
+   thx.style.display = 'none';
+   call.style.display = 'none';
+}
 
   // Закриття по кліку на overlay, якщо поля пусті
   function overlayClick() {
-	overlay.addEventListener('click', (e) => {
-		if (e.target === overlay) {
-			const isConsultationVisible = consultation.style.display === 'block';
-			const isThanksVisible = thx.style.display === 'block';
-			const isCallVisible = call.style.display === 'block';
+   overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+         const isConsultationVisible = consultation.style.display === 'block';
+         const isThanksVisible = thx.style.display === 'block';
+         const isCallVisible = call.style.display === 'block';
 
-			if (isConsultationVisible) {
-				const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
-				if (isEmpty) {
-					closeModal();
-				}
-			}
+         if (isConsultationVisible) {
+            const isEmpty = Array.from(inputs).every(input => input.value.trim() === '');
+            if (isEmpty) {
+               closeModal();
+            }
+         }
 
-			if (isThanksVisible) {
-				overlay.style.visibility = "hidden";
-				overlay.style.opacity = "0";
-				thx.style.display = "none";
-			}
+         if (isThanksVisible) {
+            overlay.style.visibility = "hidden";
+            overlay.style.opacity = "0";
+            thx.style.display = "none";
+         }
 
-			if (isCallVisible) {
-				const isEmpty = callInput.value === '';
-				if(isEmpty) {
-					closeModal();
-				}
-			}
-		}
-	});
+         if (isCallVisible) {
+            const isEmpty = callInput.value === '';
+            if(isEmpty) {
+               closeModal();
+            }
+         }
+      }
+   });
   };
 
   overlayClick();
 
+  //Відправка форми
   submit.forEach(item => {
-	item.addEventListener('click', (e) => {
+   item.addEventListener('click', (e) => {
 
-		const form = activeModalType === 'consultation' ? consultation.querySelector('form') : call.querySelector('form');
+      //Перевірка, яка саме форма активна
+      const form = activeModalType === 'consultation' ? consultation.querySelector('form') : call.querySelector('form');
 
-		if (form && !form.checkValidity()) {
-			e.preventDefault();
-			form.reportValidity();
-			return;
-		}
+      //Неможливість відправити неправильно заповнену форму
+      if (form && !form.checkValidity()) {
+         e.preventDefault();
+         form.reportValidity();
+         return;
+      }
 
-		e.preventDefault(); //зупиняє стандартне надсилання форми
+      e.preventDefault(); //зупиняє стандартне надсилання форми
 
-		const isConsultationVisible = consultation.style.display === 'block';
-		const isCallVisible = call.style.display === 'block';
+      const isConsultationVisible = consultation.style.display === 'block';
+      const isCallVisible = call.style.display === 'block';
 
-		if (isConsultationVisible) {
-			consultation.style.display = 'none';
-			thx.style.display = 'block';
-			overlayClick();
-			inputs.forEach(input => input.value = '');
-		} else if (isCallVisible) {
-			call.style.display = 'none';
-			thx.style.display = 'block';
-			overlayClick();
-			callInput.value = '';
-		}
-	});
+      if (isConsultationVisible) {
+         consultation.style.display = 'none';
+         thx.style.display = 'block';
+         overlayClick();
+         inputs.forEach(input => input.value = '');//Очищую поля вводу після відправки форми
+      } else if (isCallVisible) {
+         call.style.display = 'none';
+         thx.style.display = 'block';
+         overlayClick();
+         callInput.value = '';//Очищую поле вводу після відправки форми
+      }
+   });
   });
 });
